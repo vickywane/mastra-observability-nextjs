@@ -1,9 +1,22 @@
-import { Agent } from '@mastra/core/agent';
-import { Memory } from '@mastra/memory';
-import { weatherTool } from '../tools/weather-tool';
+/**
+ * Weather Agent
+ *
+ * An AI agent that provides weather information using OpenAI's GPT-4o-mini model.
+ * The agent can fetch current weather data for any city and suggest activities
+ * based on weather conditions.
+ *
+ * Features:
+ * - Real-time weather data retrieval via weatherTool
+ * - Thread-scoped working memory for conversation context
+ * - Activity suggestions based on weather conditions
+ */
+
+import { Agent } from "@mastra/core/agent";
+import { Memory } from "@mastra/memory";
+import { weatherTool } from "../tools/weather-tool";
 
 export const weatherAgent = new Agent({
-  name: 'Weather Agent',
+  name: "Weather Agent",
   instructions: `
       You are a helpful weather assistant that provides accurate weather information and can help planning activities based on the weather.
 
@@ -18,20 +31,17 @@ export const weatherAgent = new Agent({
 
       Use the weatherTool to fetch current weather data.
 `,
-  model: 'openai/gpt-4o-mini',
+  // Using OpenAI's GPT-4o-mini for cost-effective, fast responses
+  model: "openai/gpt-4o-mini",
+
+  // Register tools available to this agent
   tools: { weatherTool },
 
-  // memory: new Memory({
-  //   storage: new LibSQLStore({
-  //     url: 'file:../mastra.db', // path is relative to the .mastra/output directory
-  //   }),
-  // }),
-
+  // Enable working memory to maintain conversation context within a thread
   memory: new Memory({
     options: {
       workingMemory: {
         enabled: true,
-        // schema: WeatherDataSchema,
         scope: "thread",
       },
     },
